@@ -135,7 +135,7 @@ export const Checkout = () => {
                     }
                     return item
                 }))
-                console.log("TEm o item, atualizar")
+                console.log("TEm o item, atualizar", selectedList)
                 console.log("Atualizando o valor", productList.filter(item => item.id == itemId ))
             }else{
                 const itemSelecionado = productList.filter(item => item.id == itemId )
