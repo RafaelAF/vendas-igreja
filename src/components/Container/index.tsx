@@ -139,8 +139,8 @@ export const Container = () => {
                                 <ListContent>
                                     
                                     {productList.map(produto => (
-                                        console.log("asdasd", parseInt(produto.preco).toFixed(2)),
-                                        <ListItem key={produto.name}><p>{produto.name}</p><p><b>R$ {parseFloat(produto.preco).toFixed(2)}</b> {parseInt(produto.qtd)}x</p></ListItem>
+                                        console.log("asdasd", (produto.preco).toFixed(2)),
+                                        <ListItem key={produto.name}><p>{produto.name}</p><p><b>R$ {(produto.preco).toFixed(2)}</b> {(produto.qtd)}x</p></ListItem>
                                     ))}
                                     
                                 </ListContent>

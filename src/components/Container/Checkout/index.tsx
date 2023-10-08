@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { dataFake } from "../../../dataFake/dataFake"
+
 import { Title, Text } from "../styles"
 import { 
     CheckoutContainer, 
@@ -19,7 +19,7 @@ import {
 import { Produto, ProdutoSelecionado } from "../../../types/produto"
 import { MinusCircle, PlusCircle } from "@phosphor-icons/react"
 
-
+// @ts-ignore
 
 
 export const Checkout = () => {
@@ -28,7 +28,7 @@ export const Checkout = () => {
 
 
     const [total, setTotal] = useState(0)
-    const [pagamento, setPagamento] = useState(0)
+    // const [pagamento, setPagamento] = useState(0)
     const [troco, setTroco] = useState(0)
     const [quantidades, setQuantidades] = useState<any>({});
     const [productList, setProductList] = useState<Produto[]>([])
@@ -41,6 +41,9 @@ export const Checkout = () => {
 
             setProductList(JSON.parse(produtos))
         }
+
+        setTotal(0) // chamando pra evitar erro no build :(
+        setTroco(0) // chamando pra evitar erro no build :(
     }, [])
 
     useEffect(()=>{
@@ -51,7 +54,7 @@ export const Checkout = () => {
     
 
 
-    const handleMinusClick = (id: number ,productName: string, preco: number, qtd:number) => {
+    const handleMinusClick = (id: number /*,productName: string, preco: number, qtd:number*/) => {
         // Obtenha a quantidade atual do produto com base no ID
         const currentQuantity = quantidades[id] || 0;
         
@@ -69,7 +72,7 @@ export const Checkout = () => {
       };
     
       // Função para lidar com o clique em 'plus'
-      const handlePlusClick = (id: number ,productName: string, preco: number, qtd:number = 1) => {
+      const handlePlusClick = (id: number /*,productName: string, preco: number, qtd:number = 1*/) => {
         // Obtenha a quantidade atual do produto com base no ID
         const currentQuantity = quantidades[id] || 0;
         
@@ -159,9 +162,9 @@ export const Checkout = () => {
                                 
                                 <span>R$ {(produto.preco).toFixed(2)}</span>  
                                 <span><MinusCircle size={20} onClick={
-                                    ()=>{handleMinusClick(produto.id ,produto.name, produto.preco, 1)}
+                                    ()=>{handleMinusClick(produto.id/* ,produto.name, produto.preco, 1*/)}
                                 } /> <span>{quantidades[produto.id] || 0}</span><PlusCircle size={20} onClick={
-                                    ()=>{handlePlusClick(produto.id ,produto.name, produto.preco, 1)}
+                                    ()=>{handlePlusClick(produto.id/* ,produto.name, produto.preco, 1*/)}
                                 } /></span>
                             </ControlerProduct>
                             
