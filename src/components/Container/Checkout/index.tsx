@@ -56,14 +56,11 @@ export const Checkout = () => {
 
             setProductList(JSON.parse(produtos))
         }
-
-        // setTotal(0) // chamando pra evitar erro no build :(
         setTroco(0) // chamando pra evitar erro no build :(
     }, [])
 
     useEffect(()=>{
         setTotal(selectedList.reduce((acumulador, currentValue)=> acumulador + currentValue.precoUni * currentValue.qtdEscolhida, 0))
-        console.log("selectedList no use effect", selectedList)
     },[selectedList, quantidades])
 
 
@@ -132,14 +129,13 @@ export const Checkout = () => {
         case 'ADD':
             console.log("Adicionando flanvers", selectedList.findIndex(element => element.id == itemId))
             if((selectedList.findIndex(element => element.id == itemId)) != -1){
-                // atualizar quatidade
-                // const itemSelecionado = productList.filter(item => item.id == itemId )
                 setSelectedList(prevItems => prevItems.map(item => {
                     if(item.id === itemId){
                         return {...item, qtdEscolhida: item.qtdEscolhida++}
                     }
                     return item
                 }))
+                console.log("TEm o item, atualizar")
                 console.log("Atualizando o valor", productList.filter(item => item.id == itemId ))
             }else{
                 const itemSelecionado = productList.filter(item => item.id == itemId )
@@ -152,11 +148,11 @@ export const Checkout = () => {
                     precoUni: itemSelecionado[0].preco
                 })
                 setSelectedList(copyList)
-                // console.log("adicionado")
+                console.log("Nao Tem o item ")
             }
             // adicionar item pelo id e atualizar quantidade
             // setSelectedList()
-            console.log("Lista de selecionados ...", selectedList)
+            // console.log("Lista de selecionados ...", selectedList)
             break;
         default:
             break;
@@ -167,20 +163,16 @@ export const Checkout = () => {
         switch (method) {
             case "pix":
                 setPaymentMethod(method)
-                console.log("SELECIONOU PIX")
                 break;
             case "cartao":
                 setPaymentMethod(method)
-                console.log("SELECIONOU CARTAO")
                 break;
             case "dinheiro":
                 setPaymentMethod(method)
-            console.log("SELECIONOU DINHEIRO")
                 break;
             default:
                 break;
         }
-        // console.log(method)
     }
 
 
