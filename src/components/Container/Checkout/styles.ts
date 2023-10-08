@@ -69,7 +69,9 @@ export const SubtotalContainer2 = styled(SubtotalContainer)`
     align-items: center;
 `;
 
-export const InputPagamento = styled.input`
+
+
+export const InputDefault = styled.input`
     margin: 30px 0;
     padding: 8px 18px;
     border: none;
@@ -77,7 +79,9 @@ export const InputPagamento = styled.input`
     border: 1px solid #aaa;
     border-radius: 8px;
 `;
-
+export const InputPagamento = styled(InputDefault)`
+    margin: 10px 0;
+`;
 
 export const DotsContainer = styled.div`
     border-top: 1px solid #000;
@@ -111,6 +115,13 @@ export const ProductsSelecteds = styled.div`
     max-height: 340px;
     /* padding-bottom: 10px; */
     overflow: auto;
+    display: flex;
+    flex-direction: column;
+    & > div{
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
 `;
 
 export const ContainerCalculate = styled.div`
@@ -119,4 +130,97 @@ export const ContainerCalculate = styled.div`
     grid-template-rows: 1fr 1fr;
     max-height: calc(100% - 100px);
     height: 100%;
+`;
+
+
+export const PagamentoContainer = styled.div`
+    /* background-color: #ddd; */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
+`;
+
+export const PaymentMethodsContainer = styled.div`
+    margin-top: 15px;
+    display: flex;
+    gap: 12px;
+`;
+
+export const PaymentMethod = styled.button`
+    color: #000;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal; 
+    padding: 8px 16px; 
+    text-align: center;
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.20);
+    background: rgba(217, 217, 217, 0.20);
+    transition: 300ms all;
+    cursor: pointer;
+    &:hover{
+        border: 1px solid #8F64D4;
+        background: #EBDBFF;
+        transition: 200ms all;
+    }
+`;
+
+export const SelectedMethod = styled(PaymentMethod)`
+    border: 1px solid #8F64D4;
+    background: #EBDBFF;
+    transition: 200ms all;
+`;
+
+export const LoadingContainer = styled.div`
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    img{
+        width: 200px;
+        height: 200px;
+        animation: spinner 2s linear infinite;
+    }
+
+    @keyframes spinner {
+        0%{
+            transform: rotate(0deg);
+        }
+        100%{
+            transform: rotate(360deg);
+        }
+    }
+`;
+
+export const FinishedContainer = styled.div`
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    img{
+        width: 200px;
+        height: 200px;
+    }
+`;
+
+export const PayDoutContainer = styled.div`
+    width: 100%;
+    height: 100%;
+`;
+
+
+export const FishedPaymentTitle = styled.h1`
+    color: #000;
+    font-family: 'Inter', sans-serif;
+    font-size: 64px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    margin-bottom: 20px;
 `;

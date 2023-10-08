@@ -12,7 +12,7 @@ import {
 import ConfigImg from '../../assets/Vector.svg'
 import CloseImg from '../../assets/X.svg'
 import { useEffect, useState } from "react"
-import { BtnConfirm, InputPagamento, ListContent, ListItem } from "./Checkout/styles"
+import { BtnConfirm, InputDefault, ListContent, ListItem } from "./Checkout/styles"
 
 
 
@@ -76,7 +76,7 @@ export const Container = () => {
                 // se o nome do produto for igual e desejar recadastrar => recadastra
                 console.log(produtos.find(item => item.name == name))
             }else{
-                console.log("Esse produto ja existe")
+                alert("Esse produto ja existe")
             }
 
             console.log("Já existe um produto com o mesmo nome:", name);
@@ -108,23 +108,23 @@ export const Container = () => {
                         }} src={CloseImg} alt="" />
                         <EditContainer>
                             <div>
-                                <Title>Editar Produtos</Title>
+                                <Title>Cadastrar Produtos</Title>
                                 <EditProductsContainer>
                                     <LabelContainer>
                                         <label htmlFor="">Nome</label>
-                                        <InputPagamento value={name} onChange={
+                                        <InputDefault value={name} onChange={
                                             (e)=>{setName(e.target.value)}
                                         } />
                                     </LabelContainer>
                                     <LabelContainer>
                                         <label htmlFor="">Preco</label>
-                                        <InputPagamento type="number" placeholder="R$ 00,00" value={preco} onChange={
+                                        <InputDefault type="number" placeholder="R$ 00,00" value={preco} onChange={
                                             (e)=>{setPreco(parseFloat(e.target.value))}
                                         } />
                                     </LabelContainer>
                                     <LabelContainer>
                                         <label htmlFor="">Quantidade</label>
-                                        <InputPagamento type="number" value={qtd} onChange={
+                                        <InputDefault type="number" value={qtd} onChange={
                                             (e)=>{setqtd(parseInt(e.target.value))}
                                         } />
                                     </LabelContainer>

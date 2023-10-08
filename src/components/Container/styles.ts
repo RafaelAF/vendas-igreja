@@ -77,6 +77,10 @@ export const ModalContent = styled.div`
         cursor: pointer;
     }
 `;
+export const ModalPagamentoContent = styled(ModalContent)`
+    max-width: 700px;
+    max-height: 500px;
+`;
 
 
 export const EditContainer = styled.div`

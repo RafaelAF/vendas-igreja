@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-import { Title, Text } from "../styles"
+import { Title, Text, ModalContainer, ModalPagamentoContent } from "../styles"
 import { 
     CheckoutContainer, 
     ListContent, 
@@ -14,10 +14,21 @@ import {
     BtnConfirm,
     ControlerProduct,
     ProductsSelecteds,
-    ContainerCalculate
+    ContainerCalculate,
+    PagamentoContainer,
+    PaymentMethodsContainer,
+    PaymentMethod,
+    SelectedMethod,
+    LoadingContainer,
+    PayDoutContainer,
+    FishedPaymentTitle,
+    FinishedContainer
 } from "./styles"
-import { Produto, ProdutoSelecionado } from "../../../types/produto"
+import { Produto, ProdutoSelecionado/*, Venda */} from "../../../types/produto"
 import { MinusCircle, PlusCircle } from "@phosphor-icons/react"
+import CloseImg from '../../../assets/X.svg'
+import LoadingIcon from '../../../assets/CircleNotch.svg'
+import FinishedIcon from '../../../assets/PaymentAproved.svg'
 
 // @ts-ignore
 
@@ -33,6 +44,10 @@ export const Checkout = () => {
     const [quantidades, setQuantidades] = useState<any>({});
     const [productList, setProductList] = useState<Produto[]>([])
     const [selectedList, setSelectedList] = useState<ProdutoSelecionado[]>([])
+    const [modalPagamento, setModalPagamento] = useState(false)
+    const [paymentMethod, setPaymentMethod] = useState<string | null>(null)
+    const [payout, setPayout] = useState(false)
+    const [loading, setLoading] = useState(false)
 
     useEffect(()=>{
 
@@ -42,13 +57,14 @@ export const Checkout = () => {
             setProductList(JSON.parse(produtos))
         }
 
-        setTotal(0) // chamando pra evitar erro no build :(
+        // setTotal(0) // chamando pra evitar erro no build :(
         setTroco(0) // chamando pra evitar erro no build :(
     }, [])
 
     useEffect(()=>{
+        setTotal(selectedList.reduce((acumulador, currentValue)=> acumulador + currentValue.precoUni * currentValue.qtdEscolhida, 0))
         console.log("selectedList no use effect", selectedList)
-    },[selectedList])
+    },[selectedList, quantidades])
 
 
     
@@ -69,10 +85,10 @@ export const Checkout = () => {
       updateSelectedItems(id, "REMOVE", 1)
     }
 
-      };
+    };
     
       // Função para lidar com o clique em 'plus'
-      const handlePlusClick = (id: number /*,productName: string, preco: number, qtd:number = 1*/) => {
+    const handlePlusClick = (id: number /*,productName: string, preco: number, qtd:number = 1*/) => {
         // Obtenha a quantidade atual do produto com base no ID
         const currentQuantity = quantidades[id] || 0;
         
@@ -83,72 +99,101 @@ export const Checkout = () => {
         [id]: newQuantity,
         });
         updateSelectedItems(id, "ADD", 1)
-      };
+    };
 
 
-      const updateSelectedItems = (itemId: number, action: string, quantidade: number) => {
-        switch (action){
-            case 'REMOVE':
-
-                
-                setSelectedList(prevList => {
-                    // Encontre o item pelo id
-                    const selectedItem = prevList.find(item => item.id === itemId);
-            
-                    if (!selectedItem) {
-                    // Se o item não for encontrado, retorne a lista original
-                        return prevList;
-                    }
-            
-                    if (selectedItem.qtdEscolhida > 1) {
-                    // Se o valor do item for maior que 1, apenas decremente-o
-                        return prevList.map(item =>
-                            item.id === itemId ? { ...item, qtdEscolhida: item.qtdEscolhida - 1 } : item
-                        );
-                    } else {
-                    // Se o valor do item for igual a 1, remova-o da lista
-                        return prevList.filter(item => item.id !== itemId);
-                    }
-                });
-                console.log("Removendo flanvers", selectedList.findIndex(element => element.id == itemId))
-                // remover item pelo id e atualizar quantidade
-                // setSelectedList()
-                console.log("Removendo ...", productList.filter(item => item.id == itemId ))
-                break;
-            case 'ADD':
-                console.log("Adicionando flanvers", selectedList.findIndex(element => element.id == itemId))
-                if((selectedList.findIndex(element => element.id == itemId)) != -1){
-                    // atualizar quatidade
-                    // const itemSelecionado = productList.filter(item => item.id == itemId )
-                    setSelectedList(prevItems => prevItems.map(item => {
-                        if(item.id === itemId){
-                            return {...item, qtdEscolhida: item.qtdEscolhida++}
-                        }
-                        return item
-                    }))
-                    console.log("Atualizando o valor", productList.filter(item => item.id == itemId ))
-                }else{
-                    const itemSelecionado = productList.filter(item => item.id == itemId )
-                    // adicionar item
-                    const copyList = selectedList
-                    copyList.push({
-                        id: itemSelecionado[0].id,
-                        name: itemSelecionado[0].name,
-                        qtdEscolhida: quantidade,
-                        precoUni: itemSelecionado[0].preco
-                    })
-                    setSelectedList(copyList)
-                    // console.log("adicionado")
+    const updateSelectedItems = (itemId: number, action: string, quantidade: number) => {
+    switch (action){
+        case 'REMOVE':
+            setSelectedList(prevList => {
+                // Encontre o item pelo id
+                const selectedItem = prevList.find(item => item.id === itemId);
+        
+                if (!selectedItem) {
+                // Se o item não for encontrado, retorne a lista original
+                    return prevList;
                 }
-                // adicionar item pelo id e atualizar quantidade
-                // setSelectedList()
-                console.log("Lista de selecionados ...", selectedList)
+        
+                if (selectedItem.qtdEscolhida > 1) {
+                // Se o valor do item for maior que 1, apenas decremente-o
+                    return prevList.map(item =>
+                        item.id === itemId ? { ...item, qtdEscolhida: item.qtdEscolhida - 1 } : item
+                    );
+                } else {
+                // Se o valor do item for igual a 1, remova-o da lista
+                    return prevList.filter(item => item.id !== itemId);
+                }
+            });
+            console.log("Removendo flanvers", selectedList.findIndex(element => element.id == itemId))
+            // remover item pelo id e atualizar quantidade
+            // setSelectedList()
+            console.log("Removendo ...", productList.filter(item => item.id == itemId ))
+            break;
+        case 'ADD':
+            console.log("Adicionando flanvers", selectedList.findIndex(element => element.id == itemId))
+            if((selectedList.findIndex(element => element.id == itemId)) != -1){
+                // atualizar quatidade
+                // const itemSelecionado = productList.filter(item => item.id == itemId )
+                setSelectedList(prevItems => prevItems.map(item => {
+                    if(item.id === itemId){
+                        return {...item, qtdEscolhida: item.qtdEscolhida++}
+                    }
+                    return item
+                }))
+                console.log("Atualizando o valor", productList.filter(item => item.id == itemId ))
+            }else{
+                const itemSelecionado = productList.filter(item => item.id == itemId )
+                // adicionar item
+                const copyList = selectedList
+                copyList.push({
+                    id: itemSelecionado[0].id,
+                    name: itemSelecionado[0].name,
+                    qtdEscolhida: quantidade,
+                    precoUni: itemSelecionado[0].preco
+                })
+                setSelectedList(copyList)
+                // console.log("adicionado")
+            }
+            // adicionar item pelo id e atualizar quantidade
+            // setSelectedList()
+            console.log("Lista de selecionados ...", selectedList)
+            break;
+        default:
+            break;
+    }
+    } 
+
+    const handleChangePaymentMethod = (method: string) => {
+        switch (method) {
+            case "pix":
+                setPaymentMethod(method)
+                console.log("SELECIONOU PIX")
+                break;
+            case "cartao":
+                setPaymentMethod(method)
+                console.log("SELECIONOU CARTAO")
+                break;
+            case "dinheiro":
+                setPaymentMethod(method)
+            console.log("SELECIONOU DINHEIRO")
                 break;
             default:
                 break;
         }
-      } 
+        // console.log(method)
+    }
 
+
+    const handleFinish = () => {
+        setPayout(true)
+        setLoading(true)
+
+        setTimeout(()=>{
+            setLoading(false)
+            setQuantidades(0)
+            setSelectedList(prevlist => prevlist.filter(item => item.id == null))
+        }, 2000)
+    }
     return (
 
         <CheckoutContainer>
@@ -178,15 +223,19 @@ export const Checkout = () => {
                 </SubtotalContainer1>
             </ListProducts>
             <ListSelected>
-                <Title>Valor pago</Title>
-                <InputPagamento />
+                
+                {/* <Title>Valor pago</Title>
+                <InputPagamento /> */}
                 <ContainerCalculate>
                     <ProductsSelecteds>
                         <Title>Items Selecionados</Title>
-                            {selectedList.map(product => (
-                                <ListItem key={product.id}>{product.name} <p>{product.qtdEscolhida} x</p></ListItem>
-                            ))}
+                        <div>
 
+                            {selectedList.map(product => (
+                                <ListItem key={product.id}>{product.name} <p>R${((product.precoUni) * product.qtdEscolhida).toFixed(2)} ------------- {product.qtdEscolhida} x</p></ListItem>
+                                ))}
+
+                        </div>
                     </ProductsSelecteds>
                     <DotsContainer>
                         <Title>Dots</Title>
@@ -199,9 +248,90 @@ export const Checkout = () => {
                 <SubtotalContainer2>
                     <Text>Total <b>R${total.toFixed(2)}</b></Text>
                     <Text>Troco <b>R${troco.toFixed(2)}</b></Text>
-                    <BtnConfirm>Confirmar</BtnConfirm>
+                    <BtnConfirm onClick={()=>{
+                        if(selectedList.length > 0){
+                            setModalPagamento(true)
+                        }
+                    }}>Confirmar</BtnConfirm>
                 </SubtotalContainer2>
             </ListSelected>
+            {modalPagamento &&
+                <ModalContainer>
+
+                        <ModalPagamentoContent>
+
+                            {!payout &&
+                                <>
+                                    <img onClick={()=>{
+                                        setModalPagamento(false)
+                                    }} src={CloseImg} alt="" />
+                                    <PagamentoContainer>
+                                        <div>
+                                            <Title>Forma de pagamento</Title>
+                                            <PaymentMethodsContainer>
+                                                {paymentMethod != "pix" ? 
+                                                    <PaymentMethod onClick={()=>{
+                                                        handleChangePaymentMethod("pix")
+                                                    }}>PIX</PaymentMethod>
+                                                    : <SelectedMethod>PIX</SelectedMethod>
+                                                }
+                                                {paymentMethod != "cartao" ? 
+                                                    <PaymentMethod onClick={()=>{
+                                                        handleChangePaymentMethod("cartao")
+                                                    }}>Cartao</PaymentMethod>
+                                                    : <SelectedMethod>Cartao</SelectedMethod>
+                                                }
+                                                {paymentMethod != "dinheiro" ? 
+                                                    <PaymentMethod onClick={()=>{
+                                                        handleChangePaymentMethod("dinheiro")
+                                                    }}>Dinheiro</PaymentMethod>
+                                                    : <SelectedMethod>Dinheiro</SelectedMethod>
+                                                }
+                                            </PaymentMethodsContainer>
+                                        </div>
+                                        <div>
+                                            <Title>Valor pago</Title>
+                                            <InputPagamento />
+                                        </div>
+                                        <div>
+                                            <Title>Troco</Title>
+                                            <InputPagamento disabled />
+                                        </div>
+                                        <BtnConfirm onClick={()=>{
+                                            handleFinish()
+                                        }}>Finalizar</BtnConfirm>
+                                    </PagamentoContainer>
+                                </>
+                            }
+                            {payout &&
+                                // pago -- setar loading, depois de 2s remover
+                                <>
+                                    <img onClick={()=>{
+                                        setModalPagamento(false)
+                                        setPayout(false)
+                                    }} src={CloseImg} alt="" />
+                                    <PayDoutContainer>
+                                        {loading &&
+                                            <LoadingContainer>
+                                                <img src={LoadingIcon} alt="" />
+                                            </LoadingContainer>
+                                        }
+                                        {!loading &&
+                                            <FinishedContainer>
+                                                <FishedPaymentTitle>Muito obrigado</FishedPaymentTitle>
+                                                <img src={FinishedIcon} alt="" />
+                                            </FinishedContainer>
+                                            
+                                        }
+                                    </PayDoutContainer>
+                                </>
+                            }
+                        
+                    </ModalPagamentoContent>
+                    
+                </ModalContainer>
+            }
         </CheckoutContainer>
+        
     )
 }
