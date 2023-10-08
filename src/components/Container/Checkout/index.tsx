@@ -131,7 +131,7 @@ export const Checkout = () => {
             if((selectedList.findIndex(element => element.id == itemId)) != -1){
                 setSelectedList(prevItems => prevItems.map(item => {
                     if(item.id === itemId){
-                        return {...item, qtdEscolhida: item.qtdEscolhida++}
+                        return {...item, qtdEscolhida: 50}
                     }
                     return item
                 }))
