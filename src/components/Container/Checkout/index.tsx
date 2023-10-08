@@ -138,7 +138,7 @@ export const Checkout = () => {
                         precoUni: itemSelecionado[0].preco
                     })
                     setSelectedList(copyList)
-                    console.log("adicionado")
+                    // console.log("adicionado")
                 }
                 // adicionar item pelo id e atualizar quantidade
                 // setSelectedList()
