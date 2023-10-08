@@ -95,7 +95,7 @@ export const Checkout = () => {
         ...quantidades,
         [id]: newQuantity,
         });
-        updateSelectedItems(id, "ADD", 1)
+        updateSelectedItems(id, "ADD", newQuantity)
     };
 
 
@@ -129,9 +129,10 @@ export const Checkout = () => {
         case 'ADD':
             console.log("Adicionando flanvers", selectedList.findIndex(element => element.id == itemId))
             if((selectedList.findIndex(element => element.id == itemId)) != -1){
+                // let novaQtd = element
                 setSelectedList(prevItems => prevItems.map(item => {
                     if(item.id === itemId){
-                        return {...item, qtdEscolhida: 50}
+                        return {...item, qtdEscolhida: quantidade}
                     }
                     return item
                 }))
