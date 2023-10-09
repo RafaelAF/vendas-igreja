@@ -13,7 +13,7 @@ export type ProdutoSelecionado = {
 }
 
 export type Venda = {
-    id: Date, // timestamp
+    id: number, // timestamp
     produtos: ProdutoSelecionado[],
     valorPago: number,
     tipoPagamento: string,

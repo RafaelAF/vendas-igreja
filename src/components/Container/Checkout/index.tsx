@@ -24,7 +24,7 @@ import {
     FishedPaymentTitle,
     FinishedContainer
 } from "./styles"
-import { Produto, ProdutoSelecionado/*, Venda */} from "../../../types/produto"
+import { Produto, ProdutoSelecionado, Venda } from "../../../types/produto"
 import { MinusCircle, PlusCircle } from "@phosphor-icons/react"
 import CloseImg from '../../../assets/X.svg'
 import LoadingIcon from '../../../assets/CircleNotch.svg'
@@ -39,7 +39,7 @@ export const Checkout = () => {
 
 
     const [total, setTotal] = useState(0)
-    // const [pagamento, setPagamento] = useState(0)
+    const [pagamento, setPagamento] = useState(0)
     const [troco, setTroco] = useState(0)
     const [quantidades, setQuantidades] = useState<any>({});
     const [productList, setProductList] = useState<Produto[]>([])
@@ -48,6 +48,7 @@ export const Checkout = () => {
     const [paymentMethod, setPaymentMethod] = useState<string | null>(null)
     const [payout, setPayout] = useState(false)
     const [loading, setLoading] = useState(false)
+    const [vendasDoBanco, setVendasDoBanco] = useState<Venda[]>([])
 
     useEffect(()=>{
 
@@ -56,14 +57,18 @@ export const Checkout = () => {
 
             setProductList(JSON.parse(produtos))
         }
-        setTroco(0) // chamando pra evitar erro no build :(
+         // chamando pra evitar erro no build :(
     }, [])
 
     useEffect(()=>{
         setTotal(selectedList.reduce((acumulador, currentValue)=> acumulador + currentValue.precoUni * currentValue.qtdEscolhida, 0))
     },[selectedList, quantidades])
 
-
+    useEffect(()=>{
+        if(pagamento){
+            setTroco(pagamento - total)
+        }
+    },[pagamento])
     
 
 
@@ -121,10 +126,6 @@ export const Checkout = () => {
                     return prevList.filter(item => item.id !== itemId);
                 }
             });
-            console.log("Removendo flanvers", selectedList.findIndex(element => element.id == itemId))
-            // remover item pelo id e atualizar quantidade
-            // setSelectedList()
-            console.log("Removendo ...", productList.filter(item => item.id == itemId ))
             break;
         case 'ADD':
             console.log("Adicionando flanvers", selectedList.findIndex(element => element.id == itemId))
@@ -136,8 +137,6 @@ export const Checkout = () => {
                     }
                     return item
                 }))
-                console.log("TEm o item, atualizar", selectedList)
-                console.log("Atualizando o valor", productList.filter(item => item.id == itemId ))
             }else{
                 const itemSelecionado = productList.filter(item => item.id == itemId )
                 // adicionar item
@@ -149,11 +148,7 @@ export const Checkout = () => {
                     precoUni: itemSelecionado[0].preco
                 })
                 setSelectedList(copyList)
-                console.log("Nao Tem o item ")
             }
-            // adicionar item pelo id e atualizar quantidade
-            // setSelectedList()
-            // console.log("Lista de selecionados ...", selectedList)
             break;
         default:
             break;
@@ -176,15 +171,48 @@ export const Checkout = () => {
         }
     }
 
+    const registerSell = (data: ProdutoSelecionado[]) => {
 
-    const handleFinish = () => {
+        let vendasSalvas = localStorage.getItem("vendas")
+
+        const venda: Venda[] = [{
+            id: new Date().getTime(),
+            produtos: data,
+            valorPago: pagamento,
+            tipoPagamento: typeof(paymentMethod) == "string" ? paymentMethod : "",
+            troco: troco == 0 ? false : true,
+            valorTroco: troco
+        }]
+        
+        if(vendasSalvas){
+            setVendasDoBanco(JSON.parse(vendasSalvas)) 
+            // vendasDoBanco.push(venda)
+            console.log("Tem ja salvo aaqui ", vendasDoBanco)
+        }else{
+            localStorage.setItem("vendas", JSON.stringify(venda))
+        }
+        console.log("Salvando venda", JSON.stringify(venda))
+    }
+
+
+    const handleFinish = (selectedList: ProdutoSelecionado[]) => {
         setPayout(true)
         setLoading(true)
+
+
+        registerSell(selectedList)
+        /*
+            SALVAR EM VENDAS
+        
+        */
 
         setTimeout(()=>{
             setLoading(false)
             setQuantidades(0)
             setSelectedList(prevlist => prevlist.filter(item => item.id == null))
+            setPaymentMethod(null)
+            setTroco(0)
+            setPagamento(0)
         }, 2000)
     }
     return (
@@ -284,14 +312,23 @@ export const Checkout = () => {
                                         </div>
                                         <div>
                                             <Title>Valor pago</Title>
-                                            <InputPagamento />
+                                            <InputPagamento type="number" value={pagamento} onChange={(e)=>{
+                                                setPagamento(parseFloat(e.target.value))
+                                            }} />
                                         </div>
-                                        <div>
+                                        {paymentMethod == 'dinheiro' ?
+                                            <div>
                                             <Title>Troco</Title>
-                                            <InputPagamento disabled />
+                                            <InputPagamento disabled value={`R$ ${troco.toFixed(2)}`} />
+                                        </div> : <div style={{opacity: 0}}>
+                                        <Title>Troco</Title>
+                                            <InputPagamento disabled value={`R$ ${troco.toFixed(2)}`} />
                                         </div>
+                                        }
                                         <BtnConfirm onClick={()=>{
-                                            handleFinish()
+                                            if(paymentMethod && pagamento){
+                                                handleFinish(selectedList)
+                                            }
                                         }}>Finalizar</BtnConfirm>
                                     </PagamentoContainer>
                                 </>

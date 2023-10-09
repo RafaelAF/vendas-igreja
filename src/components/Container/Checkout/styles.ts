@@ -81,6 +81,10 @@ export const InputDefault = styled.input`
 `;
 export const InputPagamento = styled(InputDefault)`
     margin: 10px 0;
+    &:disabled{
+        background-color: #ddd;
+        cursor: not-allowed;
+    }
 `;
 
 export const DotsContainer = styled.div`

@@ -33,12 +33,9 @@ export const Container = () => {
     useEffect(()=>{
         let produtosData = localStorage.getItem("produtos")
         if(produtosData){
-
             setProductList(JSON.parse(produtosData))
-            // console.log(JSON.parse(produtos))
         }
-        // console.log("Produtos ", produtos)
-        // console.log("Produtos parseados", JSON.parse(produtos))
+
     }, [])
 
 
@@ -70,7 +67,6 @@ export const Container = () => {
             // Salve o array atualizado no localStorage
             localStorage.setItem("produtos", JSON.stringify(produtos));
       
-            console.log("Produto adicionado:", obj);
           } else {
             if(confirm("Deseja recadastrar o produto? ")){
                 // se o nome do produto for igual e desejar recadastrar => recadastra
