@@ -7,12 +7,13 @@ import {
     ModalContainer, 
     ModalContent,
     EditContainer,
-    EditProductsContainer, Text, LabelContainer} from "./styles"
+    EditProductsContainer, Text, LabelContainer, ConfigButtonsContainer} from "./styles"
 
 import ConfigImg from '../../assets/Vector.svg'
 import CloseImg from '../../assets/X.svg'
+import CashIcon from '../../assets/cashIcon.svg'
 import { useEffect, useState } from "react"
-import { BtnConfirm, InputDefault, ListContent, ListItem } from "./Checkout/styles"
+import { BtnConfirm, InputDefault, ListContent, ListItem, PayDoutContainer } from "./Checkout/styles"
 
 
 
@@ -22,6 +23,7 @@ export const Container = () => {
 
 
     const [showModal, setShowModal] = useState(false)
+    const [showFinancas, setShowFinancas] = useState(false)
 
     const [name, setName] = useState('')
     const [preco, setPreco] = useState<number>(0)
@@ -29,13 +31,15 @@ export const Container = () => {
 
     const [productList, setProductList] = useState<Produto[]>([])
 
+    const [getVendas, setGetVendas] = useState<string | null>(null)
+
 
     useEffect(()=>{
         let produtosData = localStorage.getItem("produtos")
         if(produtosData){
             setProductList(JSON.parse(produtosData))
         }
-
+        setGetVendas(localStorage.getItem("vendas"))
     }, [])
 
 
@@ -91,9 +95,16 @@ export const Container = () => {
         <ContainerCaixa>
             <ContentTitle>
                 <Title>Caixa de produtos</Title>
-                <ConfigButton onClick={()=>{
-                    setShowModal(true)
-                }}><img src={ConfigImg} alt="" /></ConfigButton>
+                <ConfigButtonsContainer>
+                    <ConfigButton onClick={()=>{
+                        setShowModal(true)
+                    }}><img src={ConfigImg} alt="" /></ConfigButton>
+                    <ConfigButton onClick={()=>{
+                        setShowFinancas(true)
+                    }}>
+                        <img src={CashIcon} alt="" />
+                    </ConfigButton>
+                </ConfigButtonsContainer>
             </ContentTitle>
             <Checkout />
             {showModal &&
@@ -142,6 +153,20 @@ export const Container = () => {
                                 </ListContent>
                             </div>
                         </EditContainer>
+                    </ModalContent>
+                </ModalContainer>
+            }
+
+            {
+                showFinancas &&
+                <ModalContainer>
+                    <ModalContent>
+                    <img onClick={()=>{
+                        setShowFinancas(false)
+                    }} src={CloseImg} alt="" />
+                    <PayDoutContainer>
+                        <h3>Total vendido R$ {parseFloat(getVendas).toFixed(2)}</h3> 
+                    </PayDoutContainer>
                     </ModalContent>
                 </ModalContainer>
             }

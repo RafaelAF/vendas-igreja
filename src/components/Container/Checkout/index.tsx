@@ -174,24 +174,27 @@ export const Checkout = () => {
     const registerSell = (data: ProdutoSelecionado[]) => {
 
         let vendasSalvas = localStorage.getItem("vendas")
+        console.log(data)
 
-        const venda: Venda[] = [{
-            id: new Date().getTime(),
-            produtos: data,
-            valorPago: pagamento,
-            tipoPagamento: typeof(paymentMethod) == "string" ? paymentMethod : "",
-            troco: troco == 0 ? false : true,
-            valorTroco: troco
-        }]
+        // const venda: Venda[] = [{
+        //     id: new Date().getTime(),
+        //     produtos: data,
+        //     valorPago: pagamento,
+        //     tipoPagamento: typeof(paymentMethod) == "string" ? paymentMethod : "",
+        //     troco: troco == 0 ? false : true,
+        //     valorTroco: troco
+        // }]
         
         if(vendasSalvas){
-            setVendasDoBanco(JSON.parse(vendasSalvas)) 
+            // setVendasDoBanco(JSON.parse(vendasSalvas)) 
             // vendasDoBanco.push(venda)
-            console.log("Tem ja salvo aaqui ", vendasDoBanco)
+            const calculo = parseFloat(vendasSalvas) + total
+            localStorage.setItem("vendas", String(calculo))
+            console.log("Tem ja salvo aaqui ", calculo)
         }else{
-            localStorage.setItem("vendas", JSON.stringify(venda))
+            localStorage.setItem("vendas", JSON.stringify(total))
         }
-        console.log("Salvando venda", JSON.stringify(venda))
+        // console.log("Salvando venda", JSON.stringify(venda))
     }
 
 
@@ -201,8 +204,20 @@ export const Checkout = () => {
 
 
         registerSell(selectedList)
+        // registerSell(selectedList)
+
+        // const valorRegistrado= localStorage.getItem("vendas")
+
+        // if(valorRegistrado){
+        //     const novoValor = JSON.parse(valorRegistrado) + total
+        //     console.log("ja tem", novoValor)
+        // }else{
+        //     localStorage.setItem("vendas", String(valorRegistrado))
+        //     console.log("Nao tem ainda, salvando")
+        // }
         /*
             SALVAR EM VENDAS
+
         
         */
 

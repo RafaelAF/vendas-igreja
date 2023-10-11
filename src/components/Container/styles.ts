@@ -121,3 +121,13 @@ export const LabelContainer = styled.div`
         max-width: 120px;
     }
 `;
+
+
+export const ConfigButtonsContainer = styled.div`
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 20px;
+    img{
+        width: 20px;
+    }
+`;
