@@ -31,7 +31,7 @@ export const Container = () => {
 
     const [productList, setProductList] = useState<Produto[]>([])
 
-    const [getVendas, setGetVendas] = useState<string | null>(null)
+    const [getVendas, setGetVendas] = useState<any>('')
 
 
     useEffect(()=>{

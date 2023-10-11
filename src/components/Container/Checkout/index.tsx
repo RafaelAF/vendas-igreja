@@ -24,7 +24,7 @@ import {
     FishedPaymentTitle,
     FinishedContainer
 } from "./styles"
-import { Produto, ProdutoSelecionado, Venda } from "../../../types/produto"
+import { Produto, ProdutoSelecionado/*, Venda */} from "../../../types/produto"
 import { MinusCircle, PlusCircle } from "@phosphor-icons/react"
 import CloseImg from '../../../assets/X.svg'
 import LoadingIcon from '../../../assets/CircleNotch.svg'
@@ -48,7 +48,7 @@ export const Checkout = () => {
     const [paymentMethod, setPaymentMethod] = useState<string | null>(null)
     const [payout, setPayout] = useState(false)
     const [loading, setLoading] = useState(false)
-    const [vendasDoBanco, setVendasDoBanco] = useState<Venda[]>([])
+    // const [vendasDoBanco, setVendasDoBanco] = useState<Venda[]>([])
 
     useEffect(()=>{
 
