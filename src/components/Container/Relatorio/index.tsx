@@ -17,7 +17,7 @@ export const Relatorio = () => {
         if(vendasLocal){
             setVendasDoBanco(JSON.parse(vendasLocal))
         }
-        setTotal(totalVendido ? parseInt(totalVendido) : 0)
+        setTotal(totalVendido ? parseFloat(totalVendido) : 0)
     }, [])
 
 

@@ -4,6 +4,7 @@
 #### Added -
 - renderizando total de vendas
 - renderizando tabela de vendas
+- ajustes de calculos
 
 ### Patch de melhorias [08-10-2023]
 
