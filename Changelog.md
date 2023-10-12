@@ -1,5 +1,10 @@
 
 
+### Patch de melhorias [12-10-2023]
+#### Added -
+- renderizando total de vendas
+- renderizando tabela de vendas
+
 ### Patch de melhorias [08-10-2023]
 
 #### Added -

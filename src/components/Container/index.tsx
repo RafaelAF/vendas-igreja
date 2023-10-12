@@ -18,6 +18,7 @@ import { BtnConfirm, InputDefault, ListContent, ListItem, PayDoutContainer } fro
 
 
 import { Produto } from "../../types/produto"
+import { Relatorio } from "./Relatorio"
 
 export const Container = () => {
 
@@ -31,7 +32,7 @@ export const Container = () => {
 
     const [productList, setProductList] = useState<Produto[]>([])
 
-    const [getVendas, setGetVendas] = useState<any>('')
+    // const [getVendas, setGetVendas] = useState<any>('')
 
 
     useEffect(()=>{
@@ -39,7 +40,7 @@ export const Container = () => {
         if(produtosData){
             setProductList(JSON.parse(produtosData))
         }
-        setGetVendas(localStorage.getItem("vendas"))
+        // setGetVendas(localStorage.getItem("total-vendido"))
     }, [])
 
 
@@ -165,7 +166,8 @@ export const Container = () => {
                         setShowFinancas(false)
                     }} src={CloseImg} alt="" />
                     <PayDoutContainer>
-                        <h3>Total vendido R$ {parseFloat(getVendas).toFixed(2)}</h3> 
+                            <Relatorio />
+                        {/* <h3>Total vendido R$ {getVendas ? parseFloat(getVendas).toFixed(2) : (0).toFixed(2)}</h3>  */}
                     </PayDoutContainer>
                     </ModalContent>
                 </ModalContainer>

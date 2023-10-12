@@ -24,7 +24,7 @@ import {
     FishedPaymentTitle,
     FinishedContainer
 } from "./styles"
-import { Produto, ProdutoSelecionado/*, Venda */} from "../../../types/produto"
+import { Produto, ProdutoSelecionado, Venda } from "../../../types/produto"
 import { MinusCircle, PlusCircle } from "@phosphor-icons/react"
 import CloseImg from '../../../assets/X.svg'
 import LoadingIcon from '../../../assets/CircleNotch.svg'
@@ -174,27 +174,40 @@ export const Checkout = () => {
     const registerSell = (data: ProdutoSelecionado[]) => {
 
         let vendasSalvas = localStorage.getItem("vendas")
-        console.log(data)
+        let totalVendido = localStorage.getItem("Total-vendido")
+        // let vendasSalvas = localStorage.getItem("vendas")
 
-        // const venda: Venda[] = [{
-        //     id: new Date().getTime(),
-        //     produtos: data,
-        //     valorPago: pagamento,
-        //     tipoPagamento: typeof(paymentMethod) == "string" ? paymentMethod : "",
-        //     troco: troco == 0 ? false : true,
-        //     valorTroco: troco
-        // }]
+        const venda: Venda = {
+            id: new Date().getTime(),
+            produtos: data,
+            valorPago: pagamento,
+            tipoPagamento: typeof(paymentMethod) == "string" ? paymentMethod : "",
+            troco: troco == 0 ? false : true,
+            valorTroco: troco
+        }
+        let totalVendas: Venda[] = []
+
+        // console.log("REGISTRANDO VENDA", JSON.stringify(venda))
         
         if(vendasSalvas){
-            // setVendasDoBanco(JSON.parse(vendasSalvas)) 
-            // vendasDoBanco.push(venda)
-            const calculo = parseFloat(vendasSalvas) + total
-            localStorage.setItem("vendas", String(calculo))
-            console.log("Tem ja salvo aaqui ", calculo)
+            const dataAnterior: Venda[] = JSON.parse(vendasSalvas)
+            totalVendas = [...dataAnterior, venda]
+            localStorage.setItem("vendas", JSON.stringify(totalVendas))
         }else{
-            localStorage.setItem("vendas", JSON.stringify(total))
+            totalVendas.push(venda)
+            localStorage.setItem("vendas", JSON.stringify(totalVendas))
         }
-        // console.log("Salvando venda", JSON.stringify(venda))
+
+
+        // SALVANDO/INCREMENTANDO OS VALORES DE VENDA
+        if(totalVendido){
+            const totalLocal = JSON.parse(totalVendido)
+            const calculo = totalLocal + total
+            localStorage.setItem("Total-vendido", String(calculo))
+        }else{
+            localStorage.setItem("Total-vendido", String(total))
+        }
+
     }
 
 
@@ -204,22 +217,6 @@ export const Checkout = () => {
 
 
         registerSell(selectedList)
-        // registerSell(selectedList)
-
-        // const valorRegistrado= localStorage.getItem("vendas")
-
-        // if(valorRegistrado){
-        //     const novoValor = JSON.parse(valorRegistrado) + total
-        //     console.log("ja tem", novoValor)
-        // }else{
-        //     localStorage.setItem("vendas", String(valorRegistrado))
-        //     console.log("Nao tem ainda, salvando")
-        // }
-        /*
-            SALVAR EM VENDAS
-
-        
-        */
 
         setTimeout(()=>{
             setLoading(false)
